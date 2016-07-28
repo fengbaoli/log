@@ -1,0 +1,13 @@
+def readconfig(configfile):
+    file = open(configfile)
+    for t in file.readlines():
+        contents = t.strip().split(':')
+        filepath=contents[0]
+        filename=contents[1]
+        counts =contents[2]
+
+
+
+        print(filepath+"?"+filename+"?"+counts)
+
+readconfig("conf.txt")
