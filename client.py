@@ -1,42 +1,22 @@
-# -*- coding: cp936 -*-
-
+# -*- coding:utf-8 -*-
 from socket import *
+import os
 import struct
+ADDR = ('10.224.192.132',8000)
+BUFSIZE = 1024
+filename = '/var/log/messages'
+FILEINFO_SIZE=struct.calcsize('128s32sI8s')
+sendSock = socket(AF_INET,SOCK_STREAM)
 
-
-while True:
-    ADDR = ('0.0.0.0',8000)
-    BUFSIZE = 1024
-    FILEINFO_SIZE=struct.calcsize('128s32sI8s')
-    recvSock = socket(AF_INET,SOCK_STREAM)
-    recvSock.bind(ADDR)
-    recvSock.listen(True)
-    print "等待连接..."
-    conn,addr = recvSock.accept()
-    print "客户端已连接—> ",addr
-    fhead = conn.recv(FILEINFO_SIZE)
-    filename,temp1,filesize,temp2=struct.unpack('128s32sI8s',fhead)
-    #print filename,temp1,filesize,temp2
-    print filename,len(filename),type(filename)
-    print filesize
-    fp = open('text.txt','wb')
-    restsize = filesize
-    print "正在接收文件... ",
-
-    while 1:
-        if restsize>BUFSIZE:
-            filedata=conn.recv(BUFSIZE)
-        else:
-            filedata = conn.recv(restsize)
-        if not filedata:
-            break
-        fp.write(filedata)
-        restsize = restsize-len(filedata)
-        if restsize == 0:
-            break
-
-    print "接收文件完毕，正在断开连接..."
-    fp.close()
-    conn.close()
-    recvSock.close()
-    print "连接已关闭..."
+sendSock.connect(ADDR)
+fhead=struct.pack('128s11I',filename,0,0,0,0,0,0,0,0,os.stat(filename).st_size,0,0)
+sendSock.send(fhead)
+fp = open(filename,'rb')
+while 1:
+    filedata = fp.read(BUFSIZE)
+    if not filedata: break
+    sendSock.send(filedata)
+print "文件传送完毕，正在断开连接..."
+fp.close()
+sendSock.close()
+print "连接已关闭..."
