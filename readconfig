@@ -5,9 +5,6 @@ def readconfig(configfile):
         filepath=contents[0]
         filename=contents[1]
         counts =contents[2]
-
-
-
         print(filepath+"?"+filename+"?"+counts)
-
+    file.close()
 readconfig("conf.txt")
