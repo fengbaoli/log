@@ -1,14 +1,13 @@
-# -*- coding: cp936 -*-
-
+# -*- coding:utf-8 -*-
 from socket import *
 import struct
-
 
 while True:
     ADDR = ('0.0.0.0',8000)
     BUFSIZE = 1024
     FILEINFO_SIZE=struct.calcsize('128s32sI8s')
-    recvSock = socket(AF_INET,SOCK_STREAM)
+    recvSock = socket(AF_INET,SOCK_STREAM,0)
+    recvSock.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
     recvSock.bind(ADDR)
     recvSock.listen(True)
     print "等待连接..."
@@ -16,13 +15,10 @@ while True:
     print "客户端已连接—> ",addr
     fhead = conn.recv(FILEINFO_SIZE)
     filename,temp1,filesize,temp2=struct.unpack('128s32sI8s',fhead)
-    #print filename,temp1,filesize,temp2
-    print filename,len(filename),type(filename)
-    print filesize
-    fp = open('text.txt','wb')
+    filename="text.text"
+    fp = open(filename,'a')
     restsize = filesize
     print "正在接收文件... ",
-
     while 1:
         if restsize>BUFSIZE:
             filedata=conn.recv(BUFSIZE)
@@ -34,7 +30,6 @@ while True:
         restsize = restsize-len(filedata)
         if restsize == 0:
             break
-
     print "接收文件完毕，正在断开连接..."
     fp.close()
     conn.close()
