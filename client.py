@@ -28,7 +28,7 @@ interval_time = int(cf.get("client","interval_time"))
 
 def collectdata(logpath,configfile,ip,port,interval_time):
     while True:
-        if not  os.path.exists(os.getcwd()+"/configfile"):
+        if not  os.path.exists(os.getcwd()+"/"+configfile):
             message = "配置文件:"+configfile+"不存在，请先执行init.py生成!"
             log.logerror(message)
             os._exit(1)
