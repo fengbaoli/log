@@ -14,14 +14,14 @@ https://github.com/fengbaoli/log.git
 ######3 in the Linux side using git download <br/>
 git clone  https://github.com/fengbaoli/log.git 
 ######4 to modify the collog.conf file below conf <br/>
-'[client]'<br/>
-'logpath = /var/log/httpd'   #to log path acquisition<br/>
-'configfile = log.conf'      #default parameters  <br/>
-'ip = 10.224.192.132'        #server ip <br/>
-'port = 8000'                #server listener port <br/>
-'interval_time = 10'         #collection interval time <br/>
-'[server]'<br/>
-'BUFSIZE = 1024'             #server end default parameters<br/>
-'port = 8000'                #server listener port<br/>
-'receive_path = logs'        #collection log path<br/>
+[client]<br/>
+logpath = /var/log/httpd'   =============>to log path acquisition<br/>
+configfile = log.conf       =============>default parameters  <br/>
+ip = 10.224.192.132       =============>server ip <br/>
+port = 8000                 =============>server listener port <br/>
+interval_time = 10          =============>collection interval time <br/>
+[server]<br/>
+BUFSIZE = 1024              =============>server end default parameters<br/>
+port = 8000                =============>server listener port<br/>
+'receive_path = logs'         =============>collection log path<br/>
 
