@@ -9,7 +9,7 @@ from socket import *
 from  Sendlog import  Sendlog
 import ConfigParser
 from debug import logdebug
-
+log = logdebug()
 
 #读取配置文件
 cf = ConfigParser.ConfigParser()
@@ -29,8 +29,9 @@ interval_time = int(cf.get("client","interval_time"))
 def collectdata(logpath,configfile,ip,port,interval_time):
     while True:
         if not  os.path.exists(os.getcwd()+"/configfile"):
-            message = “xx”
+            message = "配置文件:"+configfile+"不存在，请先执行init.py生成!"
             log.logerror(message)
+            os._exit(1)
         #发送数据
         s= Sendlog(configfile=configfile,ip=ip,port=port)
         s.sendlog()
