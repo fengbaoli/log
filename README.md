@@ -12,15 +12,15 @@ Real time log synchronization
 ######2 starts at server.py windowns (the default port is 8000).
 ######3 in the Linux side using git download <br/>
 git clone  https://github.com/fengbaoli/log.git 
-######4 to modify the collog.conf file below conf
-[client]
-Logpath = /var/log/httpd ====> to log path acquisition
-ConfigFile = log.conf ====> default parameters
-IP = ====>server 10.224.192.132 end IP
-Port = 8000 ====>server listener port
-Interval_time = 10 ====> sampling interval
-[server]
-BUFSIZE = 1024 =====>server end default parameters
-Port = 8000 =====>server listener port
-Receive_path=logs =====> collection log path
+######4 to modify the collog.conf file below conf <br/>
+[client] <br/>
+Logpath = /var/log/httpd ====> to log path acquisition <br/>
+ConfigFile = log.conf ====> default parameters <br/>
+IP = ====>server 10.224.192.132 end IP <br/>
+Port = 8000 ====>server listener port <br/>
+Interval_time = 10 ====> sampling interval<br/>
+[server]<br/>
+BUFSIZE = 1024 =====>server end default parameters<br/>
+Port = 8000 =====>server listener port<br/>
+Receive_path=logs =====> collection log path<br/>
 
