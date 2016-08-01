@@ -24,4 +24,7 @@ interval_time = 10          =============>collection interval time <br/>
 BUFSIZE = 1024              =============>server end default parameters<br/>
 port = 8000                =============>server listener port<br/>
 'receive_path = logs'         =============>collection log path<br/>
+######5 start client
+$bash cd log && start.sh <br/>
+
 
