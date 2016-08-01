@@ -14,13 +14,13 @@ Real time log synchronization
 git clone  https://github.com/fengbaoli/log.git 
 ######4 to modify the collog.conf file below conf <br/>
 [client] <br/>
-Logpath = /var/log/httpd ====> to log path acquisition <br/>
-ConfigFile = log.conf ====> default parameters <br/>
-IP = ====>server 10.224.192.132 end IP <br/>
-Port = 8000 ====>server listener port <br/>
-Interval_time = 10 ====> sampling interval<br/>
+logpath = /var/log/httpd  ===>to log path acquisition <br/>
+configfile = log.conf  ===>default parameters <br/>
+ip = 10.224.192.132  ===>server ip  <br/>
+port = 8000        ====>server listener port <br/>
+interval_time = 10  ====> collection interval time <br/>
 [server]<br/>
 BUFSIZE = 1024 =====>server end default parameters<br/>
-Port = 8000 =====>server listener port<br/>
-Receive_path=logs =====> collection log path<br/>
+port = 8000 =====>server listener port<br/>
+receive_path = logs  =====> collection log path<br/>
 
