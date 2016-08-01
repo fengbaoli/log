@@ -26,5 +26,6 @@ git clone  https://github.com/fengbaoli/log.git
 'receive_path = logs'         =============>collection log path<br/>
 ######`5 start client`
 `$bash cd log && start.sh` <br/>
-
+#Contact me
+Send email to：wenyefbl@163.com
 
