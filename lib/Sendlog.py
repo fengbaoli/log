@@ -7,6 +7,7 @@ import  time
 import  struct,linecache
 sys.path.append(os.getcwd()+'../lib')
 from debug import logdebug
+from counts import Counts
 log = logdebug()
 
 class Sendlog:
@@ -29,7 +30,9 @@ class Sendlog:
                 log.loginfo(message)
                 continue
             #目前文件行数
-            now_counts = len(open(filepath_name,'rU').readlines())
+            #now_counts = len(open(filepath_name,'rU').readlines())
+            Statistics_num = Counts(filepath_name)
+            now_counts = Statistics_num.counts()
             message = "文件"+filepath_name+"目前行数为"+str(now_counts)
             log.loginfo(message)
             message="文件"+filename+"更新配置文件:行数为"+str(now_counts)
@@ -82,12 +85,15 @@ class Sendlog:
                 log.loginfo(message)
                 fhead=struct.pack('128s11I',filename,0,0,0,0,0,0,0,0,os.stat(filepath_name).st_size,0,0)
                 sendSock.send(fhead)
-                while old_counts <= now_counts:
-                    tmpfiledata = linecache.getline(filepath_name,old_counts)
-                    filedata =  ''.join(tmpfiledata)
-                    sendSock.send(filedata)
-                    linecache.clearcache()
-                    old_counts = old_counts + 1
+                #读取文件数据到缓存
+                message = "读取文件:"+filepath_name+"数据到缓存"
+                log.loginfo(message)
+                for  tmpfiledata in linecache.getlines(filepath_name)[old_counts:now_counts]:
+                        filedata =  ''.join(tmpfiledata)
+                        sendSock.send(filedata)
+                message = "缓存数据读取完毕，清理缓存"
+                log.loginfo(message)
+                linecache.clearcache()
                 message= "文件"+filename+"数据发送完毕"
                 log.loginfo(message)
                 message= "文件"+filename+"文件传送完毕，正在断开连接..."
