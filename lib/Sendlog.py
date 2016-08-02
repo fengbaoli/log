@@ -35,6 +35,16 @@ class Sendlog:
             now_counts = Statistics_num.counts()
             message = "文件"+filepath_name+"目前行数为"+str(now_counts)
             log.loginfo(message)
+            if now_counts < old_counts:
+                message = "文件"+filename+"记录数被重置，需要重新发送数据"
+                log.loginfo(message)
+                tt = filepath_name.replace('/','\/')
+                new_content = "%s:%s:0" % (tt,filename)
+                cmd ='sed -i \'%ds/^.*$/%s/\'  %s' % (num,new_content,self.configfile)
+                os.system(cmd)
+                num=num+1
+                time.sleep(10)
+                continue
             message="文件"+filename+"更新配置文件:行数为"+str(now_counts)
             log.loginfo(message)
             #更新配置文件
