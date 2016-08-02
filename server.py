@@ -44,6 +44,8 @@ def Collog(port,BUFSIZE,receive_path):
         recvSock.close()
         print "连接已关闭..."
 
+
+
 if __name__ == "__main__":
     port = 8000
     BUFSIZE = 1024
