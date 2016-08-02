@@ -3,7 +3,12 @@ from socket import *
 import struct
 import  os,repr
 import sys
-sys.path.append(os.getcwd()+'\lib')
+import  platform
+if 'Windows' in platform.system():
+    sys.path.append(os.getcwd()+'\lib')
+else:
+    sys.path.append(os.getcwd()+'/lib')
+
 from debug import logdebug
 log = logdebug()
 
@@ -33,7 +38,10 @@ def Collog(port,BUFSIZE,receive_path):
         #创建接收端存放日志路径
         message = "创建接收端存放日志路径"
         log.loginfo(message)
-        receive_full_path = os.getcwd()+"\\"+receive_path+"\\"
+        if  'Windows' in platform.system():
+            receive_full_path = os.getcwd()+"\\"+receive_path+"\\"
+        else:
+            receive_full_path = os.getcwd()+"/"+receive_path+"/"
         if not os.path.exists(receive_full_path):
             os.mkdir(receive_full_path)
         filename = receive_full_path+filename
