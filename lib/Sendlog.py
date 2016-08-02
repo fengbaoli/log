@@ -43,18 +43,7 @@ class Sendlog:
                 message = "文件"+filename+"记录数被重置，需要重新发送数据"
                 log.loginfo(message)
                 #读取配置
-                import  ConfigParser
-                cf = ConfigParser.ConfigParser()
-                cf.read(os.getcwd()+"../conf/collog.conf")
-                server_iswindowns = cf.get("client","server_iswindowns")
-                if server_iswindowns == "yes":
-                    tt = filepath_name.replace('/','\/')
-                elif server_iswindowns == "no":
-                    tt = filepath_name
-                else:
-                    message = "配置参数 server_iswindowns配置错误,请配置为yes或者no"
-                    log.logerror(message)
-                    break
+                tt = filepath_name.replace('/','\/')
                 new_content = "%s:%s:0" % (tt,filename)
                 cmd ='sed -i \'%ds/^.*$/%s/\'  %s' % (num,new_content,self.configfile)
                 os.system(cmd)
@@ -64,18 +53,7 @@ class Sendlog:
             message="文件"+filename+"更新配置文件:行数为"+str(now_counts)
             log.loginfo(message)
             #更新配置文件
-            import  ConfigParser
-            cf = ConfigParser.ConfigParser()
-            cf.read(os.getcwd()+"../conf/collog.conf")
-            server_iswindowns = cf.get("client","server_iswindowns")
-            if server_iswindowns == "yes":
-                tt = filepath_name.replace('/','\/')
-            elif server_iswindowns == "no":
-                tt = filepath_name
-            else:
-                message = "配置参数 server_iswindowns配置错误,请配置为yes或者no"
-                log.logerror(message)
-                break
+            tt = filepath_name.replace('/','\/')
             new_content = "%s:%s:%s" % (tt,filename,now_counts)
             cmd ='sed -i \'%ds/^.*$/%s/\'  %s' % (num,new_content,self.configfile)
             os.system(cmd)
