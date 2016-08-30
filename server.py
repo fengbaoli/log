@@ -4,6 +4,10 @@ import struct
 import  os,repr
 import sys
 import  platform
+import  re
+import time
+import datetime
+
 if 'Windows' in platform.system():
     sys.path.append(os.getcwd()+'\lib')
 else:
@@ -12,7 +16,28 @@ else:
 from debug import logdebug
 log = logdebug()
 
-def Collog(port,BUFSIZE,receive_path):
+
+def VisitDir(path,days):
+    """
+
+    :rtype : object
+    """
+    li = os.listdir(path)
+    for p in li :
+        pathnamne = os.path.join(path,p)
+        if not os.path.join(pathnamne):
+            VisitDir(pathnamne,days)
+        else:
+            ltime =  int(os.path.getatime(pathnamne))
+            save_days = days
+            save_seconds = save_days*24*3600
+            ntime = int(time.time())-save_seconds
+
+            if ltime<=ntime :
+                os.remove(pathnamne)
+
+
+def Collog(port,BUFSIZE,receive_path,save_days):
     while True:
         ADDR = ('0.0.0.0',port)
         BUFSIZE = BUFSIZE
@@ -56,7 +81,8 @@ def Collog(port,BUFSIZE,receive_path):
                 filedata = conn.recv(restsize)
             if not filedata:
                 break
-            fp.write(filedata)
+            data = filedata.replace("root123","password")
+            fp.write(data)
             restsize = restsize-len(filedata)
             if restsize == 0:
                 break
@@ -67,11 +93,30 @@ def Collog(port,BUFSIZE,receive_path):
         recvSock.close()
         message= "连接已关闭..."
         log.loginfo(message)
-
-
+        #文件进行备份保留三天的数据
+        curr_hour = datetime.datetime.now().hour
+        if curr_hour == 7:
+            bak_dir = os.getcwd()+"\\logbak"
+            if not os.path.exists(bak_dir):
+                os.mkdir(bak_dir)
+            #文件复制
+            currdata = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+            targetfilename = filename.split("\\")[-1]+"-"+currdata+"-bak"
+            file1 = open(filename,'r')
+            file2 = open(bak_dir+"\\"+targetfilename,'w')
+            file2.write(file1.read())
+            file1.close()
+            file2.close()
+            #源文件删除
+            os.remove(filename)
+         #备份文件过期删除
+        days  = save_days
+        path = r"d:\job-agent-logs\log-master\logbak"
+        VisitDir(path,days)
 
 if __name__ == "__main__":
     port = 8000
     BUFSIZE = 1024
     receive_path ="logs"
-    Collog(port,BUFSIZE,receive_path)
+    days = 3
+    Collog(port,BUFSIZE,receive_path,save_days=days)
