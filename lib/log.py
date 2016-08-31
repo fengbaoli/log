@@ -20,8 +20,10 @@ class Collectlog:
         for root, dirs, files in os.walk(self.path):
             for filename in files:
                 counts = 0
-                contexts=(root+"/"+filename+":"+filename+":"+str(counts)+"\n")
-                file.write(contexts)
+                endsig = os.path.splitext(filename)[1]
+                if endsig == ".log":
+                   contexts=(root+"/"+filename+":"+filename+":"+str(counts)+"\n")
+                   file.write(contexts)
         file.close()
     def gen_new_config(self,new_filepath_name,path):
         self.path = path
@@ -68,8 +70,10 @@ class Collectlog:
             for t in add_contexts:
                 filename = t.split("/")[-1]
                 counts = 0
-                contents = t.strip("\n").strip()+":"+filename.strip("\n").strip()+":"+str(counts)
-                cfile.write(contents+"\n")
+                endsig = os.path.splitext(filename)[1]
+                if endsig == ".log":
+                   contents = t.strip("\n").strip()+":"+filename.strip("\n").strip()+":"+str(counts)
+                   cfile.write(contents+"\n")
         cfile.close()
 
 
