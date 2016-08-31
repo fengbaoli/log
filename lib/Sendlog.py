@@ -63,12 +63,12 @@ class Sendlog:
             if now_counts == 0 :
                 message = "文件"+filename+"记录为空,没有数据可以发送"
                 log.loginfo(message)
-                time.sleep(10)
+                #time.sleep(5)
                 continue
             if now_counts == old_counts:
                 message = "文件"+filename+"记录数没有更新，没有新数据"
                 log.loginfo(message)
-                time.sleep(10)
+                #time.sleep(5)
                 continue
             #连接服务端
             message="开始连接服务端......."
