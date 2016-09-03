@@ -19,7 +19,6 @@ log = logdebug()
 
 def VisitDir(path,days):
     """
-
     :rtype : object
     """
     li = os.listdir(path)
@@ -32,13 +31,46 @@ def VisitDir(path,days):
             save_days = days
             save_seconds = save_days*24*3600
             ntime = int(time.time())-save_seconds
-
             if ltime<=ntime :
+                message = "文件 %s 已经超过三天,正在删除" % (pathnamne)
+                #log.loginfo(message)
                 os.remove(pathnamne)
-
-
 def Collog(port,BUFSIZE,receive_path,save_days):
     while True:
+        #文件进行备份保留三天的数据
+        curr_hour = datetime.datetime.now().hour
+        if curr_hour == 6:
+            bak_dir = os.getcwd()+"\\logbak"
+            if not os.path.exists(bak_dir):
+                os.mkdir(bak_dir)
+            #文件复制
+            logs_dir = os.getcwd()+"\\logs"
+            li = os.listdir(logs_dir)
+            for p in li :
+                filename = os.path.join(logs_dir,p)
+                currdata = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+                targetfilename = filename.split("\\")[-1]+"-"+currdata+"-bak"
+                bakfile= bak_dir+"\\"+targetfilename
+                if not os.path.exists(bakfile):
+                    message = "开始备份日志文件 %s" %(filename)
+                    log.loginfo(message)
+                    file1 = open(filename,'r')
+                    file2 = open(bak_dir+"\\"+targetfilename,'w')
+                    file2.write(file1.read())
+                    file1.close()
+                    file2.close()
+                    message = "备份日志文件 %s  完成" % (filename)
+                    log.loginfo(message)
+                    #源文件删除
+                    message = "源文件删除 %s" %(filename)
+                    log.loginfo(message)
+                    if filename.split("\\")[-1] == "collect-info.log":
+                        pass
+                    else:
+                        os.remove(filename)
+                else:
+                    message="日志文件已经备份，不需要再备份"
+                    log.loginfo(message)
         ADDR = ('0.0.0.0',port)
         BUFSIZE = BUFSIZE
         FILEINFO_SIZE=struct.calcsize('128s32sI8s')
@@ -53,7 +85,7 @@ def Collog(port,BUFSIZE,receive_path,save_days):
         for  ipaddr in addr:
             network.append(ipaddr)
         message = "客户端已连接—>"+str(ipaddr)
-        log.loginfo(message)
+        #log.loginfo(message)
         fhead = conn.recv(FILEINFO_SIZE)
         filename,temp1,filesize,temp2=struct.unpack('128s32sI8s',fhead)
         #获取发送端的文件名
@@ -62,7 +94,7 @@ def Collog(port,BUFSIZE,receive_path,save_days):
         log.loginfo(message)
         #创建接收端存放日志路径
         message = "创建接收端存放日志路径"
-        log.loginfo(message)
+        #log.loginfo(message)
         if  'Windows' in platform.system():
             receive_full_path = os.getcwd()+"\\"+receive_path+"\\"
         else:
@@ -73,7 +105,7 @@ def Collog(port,BUFSIZE,receive_path,save_days):
         fp = open(filename,'a')
         restsize = filesize
         message = "正在接收文件:"+filename
-        log.loginfo(message)
+        #log.loginfo(message)
         while 1:
             if restsize>BUFSIZE:
                 filedata=conn.recv(BUFSIZE)
@@ -81,39 +113,23 @@ def Collog(port,BUFSIZE,receive_path,save_days):
                 filedata = conn.recv(restsize)
             if not filedata:
                 break
-            data = filedata.replace("root123","password")
+            #敏感字段过滤
+            data = filedata.replace("password","password")
             fp.write(data)
             restsize = restsize-len(filedata)
             if restsize == 0:
                 break
         message= "接收文件 %s 完毕，正在断开连接..." % filename
-        log.loginfo(message)
+        #log.loginfo(message)
         fp.close()
         conn.close()
         recvSock.close()
         message= "连接已关闭..."
-        log.loginfo(message)
-        #文件进行备份保留三天的数据
-        curr_hour = datetime.datetime.now().hour
-        if curr_hour == 7:
-            bak_dir = os.getcwd()+"\\logbak"
-            if not os.path.exists(bak_dir):
-                os.mkdir(bak_dir)
-            #文件复制
-            currdata = time.strftime('%Y-%m-%d',time.localtime(time.time()))
-            targetfilename = filename.split("\\")[-1]+"-"+currdata+"-bak"
-            file1 = open(filename,'r')
-            file2 = open(bak_dir+"\\"+targetfilename,'w')
-            file2.write(file1.read())
-            file1.close()
-            file2.close()
-            #源文件删除
-            os.remove(filename)
+        #log.loginfo(message)
          #备份文件过期删除
         days  = save_days
         path = r"d:\job-agent-logs\log-master\logbak"
         VisitDir(path,days)
-
 if __name__ == "__main__":
     port = 8000
     BUFSIZE = 1024
