@@ -35,11 +35,15 @@ def VisitDir(path,days):
                 message = "文件 %s 已经超过三天,正在删除" % (pathnamne)
                 #log.loginfo(message)
                 os.remove(pathnamne)
+
+
+
+
 def Collog(port,BUFSIZE,receive_path,save_days):
     while True:
         #文件进行备份保留三天的数据
         curr_hour = datetime.datetime.now().hour
-        if curr_hour == 6:
+        if curr_hour == 5:
             bak_dir = os.getcwd()+"\\logbak"
             if not os.path.exists(bak_dir):
                 os.mkdir(bak_dir)
@@ -76,6 +80,7 @@ def Collog(port,BUFSIZE,receive_path,save_days):
         FILEINFO_SIZE=struct.calcsize('128s32sI8s')
         recvSock = socket(AF_INET,SOCK_STREAM,0)
         recvSock.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+        #recvSock.settimeout(60)
         recvSock.bind(ADDR)
         recvSock.listen(True)
         message = "等待连接..."
@@ -85,13 +90,15 @@ def Collog(port,BUFSIZE,receive_path,save_days):
         for  ipaddr in addr:
             network.append(ipaddr)
         message = "客户端已连接—>"+str(ipaddr)
-        #log.loginfo(message)
+        log.loginfo(message)
         fhead = conn.recv(FILEINFO_SIZE)
         filename,temp1,filesize,temp2=struct.unpack('128s32sI8s',fhead)
         #获取发送端的文件名
         filename=filename.split('\x00')[0]
-        message = "获取文件:"+filename
+        message = "读取文件名:"+filename
         log.loginfo(message)
+        if filename == "log.conf":
+            continue
         #创建接收端存放日志路径
         message = "创建接收端存放日志路径"
         #log.loginfo(message)
@@ -113,8 +120,7 @@ def Collog(port,BUFSIZE,receive_path,save_days):
                 filedata = conn.recv(restsize)
             if not filedata:
                 break
-            #敏感字段过滤
-            data = filedata.replace("password","password")
+            data = filedata.replace("test","password")
             fp.write(data)
             restsize = restsize-len(filedata)
             if restsize == 0:
