@@ -7,6 +7,7 @@ from log import  Collectlog
 import time,struct,linecache
 from socket import *
 from  Sendlog import  Sendlog
+from Sendfilename import Sendfilename
 import ConfigParser
 from debug import logdebug
 log = logdebug()
@@ -28,6 +29,17 @@ interval_time = int(cf.get("client","interval_time"))
 
 def collectdata(logpath,configfile,ip,port,interval_time):
     while True:
+        curr_hour = datetime.datetime.now().hour
+        if curr_hour < 8 :
+            message="当前时间小于早上8点，不发送日志,重置日志配置文件行数"
+            log.loginfo(message)
+            testfile = "log.conf"
+            message="测试文件不需要发送"
+            log.loginfo(message)
+            sendfilename = Sendfilename(testfile,ip,port)
+            sendfilename.sendfilename()
+            time.sleep(5)
+            continue
         if not  os.path.exists(os.getcwd()+"/"+configfile):
             message = "配置文件:"+configfile+"不存在，请先执行init.py生成!"
             log.logerror(message)
@@ -60,8 +72,5 @@ def collectdata(logpath,configfile,ip,port,interval_time):
 
 
 if __name__ =="__main__":
-    curr_hour = datetime.datetime.now().hour
-    if curr_hour >= 9 :
+    while True:
         collectdata(logpath,configfile,ip,port,interval_time)
-    else:
-        pass
